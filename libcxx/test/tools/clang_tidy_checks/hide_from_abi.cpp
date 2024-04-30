@@ -13,7 +13,6 @@
 
 namespace {
 AST_MATCHER(clang::ClassTemplateDecl, hasFullSpecializations) { return !Node.specializations().empty(); }
-AST_MATCHER(clang::CXXRecordDecl, isTrivial) { return Node.isTrivial(); }
 } // namespace
 
 namespace libcpp {
