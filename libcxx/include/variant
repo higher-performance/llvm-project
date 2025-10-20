@@ -1578,11 +1578,48 @@ _LIBCPP_HIDE_FROM_ABI constexpr void __throw_if_valueless(_Vs&&... __vs) {
   }
 }
 
-template < class _Visitor, class... _Vs, typename>
-_LIBCPP_HIDE_FROM_ABI constexpr decltype(auto) visit(_Visitor&& __visitor, _Vs&&... __vs) {
-  using __variant_detail::__visitation::__variant;
-  std::__throw_if_valueless(std::forward<_Vs>(__vs)...);
-  return __variant::__visit_value(std::forward<_Visitor>(__visitor), std::forward<_Vs>(__vs)...);
+template <class _Visitor, class... _Vs, typename>
+_LIBCPP_HIDE_FROM_ABI constexpr decltype(auto) visit(_Visitor&& __visitor,
+                                                     _Vs&&... __vs) {
+#define _XDispatchIndex(_I)                                              \
+  case _I:                                                               \
+    if constexpr (__variant_size::value > _I) {                          \
+      return __visitor(                                                  \
+          __variant::__get_alt<_I>(std::forward<_Vs>(__vs)...).__value); \
+    }                                                                    \
+    [[__fallthrough__]]
+#define _XDispatchMax 7 // Speed up compilation for the common cases
+  if constexpr (sizeof...(_Vs) == 1) {
+    if constexpr (variant_size<__remove_cvref_t<_Vs>...>::value <=
+                  _XDispatchMax) {
+      using __variant_detail::__access::__variant;
+      using __variant_size = variant_size<__remove_cvref_t<_Vs>...>;
+      const size_t __indexes[] = {__vs.index()...};
+      switch (__indexes[0]) {
+        _XDispatchIndex(_XDispatchMax - 7);
+        _XDispatchIndex(_XDispatchMax - 6);
+        _XDispatchIndex(_XDispatchMax - 5);
+        _XDispatchIndex(_XDispatchMax - 4);
+        _XDispatchIndex(_XDispatchMax - 3);
+        _XDispatchIndex(_XDispatchMax - 2);
+        _XDispatchIndex(_XDispatchMax - 1);
+        _XDispatchIndex(_XDispatchMax - 0);
+        default:
+          __throw_bad_variant_access();
+      }
+    } else {
+      static_assert(
+          variant_size<__remove_cvref_t<_Vs>...>::value > _XDispatchMax,
+          "forgot to add dispatch case");
+    }
+  } else {
+    using __variant_detail::__visitation::__variant;
+    std::__throw_if_valueless(std::forward<_Vs>(__vs)...);
+    return __variant::__visit_value(std::forward<_Visitor>(__visitor),
+                                    std::forward<_Vs>(__vs)...);
+  }
+#undef _XDispatchMax
+#undef _XDispatchIndex
 }
 
 #    if _LIBCPP_STD_VER >= 20
