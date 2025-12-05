@@ -550,7 +550,7 @@ public:
     return __table_.__equal_range_unique(__k);
   }
 
-  _LIBCPP_HIDE_FROM_ABI mapped_type& operator[](const key_type& __k);
+  _LIBCPP_HIDE_FROM_ABI mapped_type& operator[](const key_type& __k) _LIBCPP_LIFETIMEBOUND;
 
   _LIBCPP_HIDE_FROM_ABI size_type bucket_count() const { return __table_.bucket_count(); }
   _LIBCPP_HIDE_FROM_ABI size_type max_bucket_count() const { return __table_.max_bucket_count(); }

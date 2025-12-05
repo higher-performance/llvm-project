@@ -765,8 +765,8 @@ public:
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI bool empty() const _NOEXCEPT { return size() == 0; }
 
   // element access:
-  _LIBCPP_HIDE_FROM_ABI reference operator[](size_type __i) _NOEXCEPT;
-  _LIBCPP_HIDE_FROM_ABI const_reference operator[](size_type __i) const _NOEXCEPT;
+  _LIBCPP_HIDE_FROM_ABI reference operator[](size_type __i) _NOEXCEPT _LIBCPP_LIFETIMEBOUND;
+  _LIBCPP_HIDE_FROM_ABI const_reference operator[](size_type __i) const _NOEXCEPT _LIBCPP_LIFETIMEBOUND;
   _LIBCPP_HIDE_FROM_ABI reference at(size_type __i) _LIBCPP_LIFETIMEBOUND;
   _LIBCPP_HIDE_FROM_ABI const_reference at(size_type __i) const _LIBCPP_LIFETIMEBOUND;
   _LIBCPP_HIDE_FROM_ABI reference front() _NOEXCEPT _LIBCPP_LIFETIMEBOUND;

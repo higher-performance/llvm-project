@@ -4596,7 +4596,7 @@ public:
     _LIBCPP_ASSERT_PEDANTIC(ready(), "match_results::str() called when not ready");
     return (*this)[__sub].str();
   }
-  _LIBCPP_HIDE_FROM_ABI const_reference operator[](size_type __n) const {
+  _LIBCPP_HIDE_FROM_ABI const_reference operator[](size_type __n) const _LIBCPP_LIFETIMEBOUND {
     // If the match results are not ready, this call will be equivalent to calling this function with `__n >= size()`,
     // returning an empty subrange.
     _LIBCPP_ASSERT_PEDANTIC(ready(), "match_results::operator[]() called when not ready");
