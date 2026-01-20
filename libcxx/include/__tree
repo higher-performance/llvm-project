@@ -348,7 +348,9 @@ template <class _NodePtr>
 _LIBCPP_HIDE_FROM_ABI void __tree_remove(_NodePtr __root, _NodePtr __z) _NOEXCEPT {
   _LIBCPP_ASSERT_INTERNAL(__root != nullptr, "Root node should not be null");
   _LIBCPP_ASSERT_INTERNAL(__z != nullptr, "The node to remove should not be null");
-  _LIBCPP_ASSERT_INTERNAL(std::__tree_invariant(__root), "The tree invariants should hold");
+  // google3-begin: b/423959582 - skip this expensive assert so we can enable debug mode
+  // _LIBCPP_ASSERT_INTERNAL(std::__tree_invariant(__root), "The tree invariants should hold");
+  // google3-end: b/423959582
   // __z will be removed from the tree.  Client still needs to destruct/deallocate it
   // __y is either __z, or if __z has two children, __tree_next(__z).
   // __y will have at most one child.
@@ -942,8 +944,10 @@ public:
   _LIBCPP_HIDE_FROM_ABI allocator_type __alloc() const _NOEXCEPT { return allocator_type(__node_alloc()); }
 
   _LIBCPP_HIDE_FROM_ABI size_type size() const _NOEXCEPT { return __size_; }
-  _LIBCPP_HIDE_FROM_ABI value_compare& value_comp() _NOEXCEPT { return __value_comp_; }
-  _LIBCPP_HIDE_FROM_ABI const value_compare& value_comp() const _NOEXCEPT { return __value_comp_; }
+  _LIBCPP_HIDE_FROM_ABI value_compare& value_comp() _NOEXCEPT _LIBCPP_LIFETIMEBOUND { return __value_comp_; }
+  _LIBCPP_HIDE_FROM_ABI const value_compare& value_comp() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+    return __value_comp_;
+  }
 
 public:
   _LIBCPP_HIDE_FROM_ABI __node_pointer __root() const _NOEXCEPT {
@@ -1007,10 +1011,14 @@ public:
     destroy(__root());
   }
 
-  _LIBCPP_HIDE_FROM_ABI iterator begin() _NOEXCEPT { return iterator(__begin_node_); }
-  _LIBCPP_HIDE_FROM_ABI const_iterator begin() const _NOEXCEPT { return const_iterator(__begin_node_); }
-  _LIBCPP_HIDE_FROM_ABI iterator end() _NOEXCEPT { return iterator(__end_node()); }
-  _LIBCPP_HIDE_FROM_ABI const_iterator end() const _NOEXCEPT { return const_iterator(__end_node()); }
+  _LIBCPP_HIDE_FROM_ABI iterator begin() _NOEXCEPT _LIBCPP_LIFETIMEBOUND { return iterator(__begin_node_); }
+  _LIBCPP_HIDE_FROM_ABI const_iterator begin() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+    return const_iterator(__begin_node_);
+  }
+  _LIBCPP_HIDE_FROM_ABI iterator end() _NOEXCEPT _LIBCPP_LIFETIMEBOUND { return iterator(__end_node()); }
+  _LIBCPP_HIDE_FROM_ABI const_iterator end() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+    return const_iterator(__end_node());
+  }
 
   _LIBCPP_HIDE_FROM_ABI size_type max_size() const _NOEXCEPT {
     return std::min<size_type>(__node_traits::max_size(__node_alloc()), numeric_limits<difference_type >::max());
@@ -1194,8 +1202,8 @@ public:
   _LIBCPP_HIDE_FROM_ABI _NodeHandle __node_handle_extract(const_iterator);
 #endif
 
-  _LIBCPP_HIDE_FROM_ABI iterator erase(const_iterator __p);
-  _LIBCPP_HIDE_FROM_ABI iterator erase(const_iterator __f, const_iterator __l);
+  _LIBCPP_HIDE_FROM_ABI iterator erase(const_iterator __p) _LIBCPP_LIFETIMEBOUND;
+  _LIBCPP_HIDE_FROM_ABI iterator erase(const_iterator __f, const_iterator __l) _LIBCPP_LIFETIMEBOUND;
   template <class _Key>
   _LIBCPP_HIDE_FROM_ABI size_type __erase_unique(const _Key& __k);
   template <class _Key>
@@ -1205,7 +1213,7 @@ public:
   __insert_node_at(__end_node_pointer __parent, __node_base_pointer& __child, __node_base_pointer __new_node) _NOEXCEPT;
 
   template <class _Key>
-  _LIBCPP_HIDE_FROM_ABI iterator find(const _Key& __key) {
+  _LIBCPP_HIDE_FROM_ABI iterator find(const _Key& __key) _LIBCPP_LIFETIMEBOUND {
     auto [__, __match] = __find_equal(__key);
     if (__match == nullptr)
       return end();
@@ -1213,7 +1221,7 @@ public:
   }
 
   template <class _Key>
-  _LIBCPP_HIDE_FROM_ABI const_iterator find(const _Key& __key) const {
+  _LIBCPP_HIDE_FROM_ABI const_iterator find(const _Key& __key) const _LIBCPP_LIFETIMEBOUND {
     auto [__, __match] = __find_equal(__key);
     if (__match == nullptr)
       return end();
@@ -1248,7 +1256,7 @@ public:
   }
 
   template <class _Key>
-  _LIBCPP_HIDE_FROM_ABI iterator __lower_bound_unique(const _Key& __v) {
+  _LIBCPP_HIDE_FROM_ABI iterator __lower_bound_unique(const _Key& __v) _LIBCPP_LIFETIMEBOUND {
     return iterator(__lower_upper_bound_unique_impl<true>(__v));
   }
 
@@ -1263,7 +1271,7 @@ public:
   }
 
   template <class _Key>
-  _LIBCPP_HIDE_FROM_ABI const_iterator __upper_bound_unique(const _Key& __v) const {
+  _LIBCPP_HIDE_FROM_ABI const_iterator __upper_bound_unique(const _Key& __v) const _LIBCPP_LIFETIMEBOUND {
     return iterator(__lower_upper_bound_unique_impl<false>(__v));
   }
 
@@ -1278,7 +1286,7 @@ private:
 
 public:
   template <class _Key>
-  _LIBCPP_HIDE_FROM_ABI iterator __lower_bound_multi(const _Key& __v) {
+  _LIBCPP_HIDE_FROM_ABI iterator __lower_bound_multi(const _Key& __v) _LIBCPP_LIFETIMEBOUND {
     return __lower_bound_multi(__v, __root(), __end_node());
   }
   template <class _Key>
@@ -1292,7 +1300,7 @@ public:
   }
 
   template <class _Key>
-  _LIBCPP_HIDE_FROM_ABI const_iterator __upper_bound_multi(const _Key& __v) const {
+  _LIBCPP_HIDE_FROM_ABI const_iterator __upper_bound_multi(const _Key& __v) const _LIBCPP_LIFETIMEBOUND {
     return __upper_bound_multi(__v, __root(), __end_node());
   }
 

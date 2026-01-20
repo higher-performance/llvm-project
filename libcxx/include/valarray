@@ -822,12 +822,12 @@ public:
   _LIBCPP_HIDE_FROM_ABI valarray& operator=(const __val_expr<_ValExpr>& __v);
 
   // element access:
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI const value_type& operator[](size_t __i) const {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI const value_type& operator[](size_t __i) const _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(__i < size(), "valarray::operator[] index out of bounds");
     return __begin_[__i];
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI value_type& operator[](size_t __i) {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI value_type& operator[](size_t __i) _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(__i < size(), "valarray::operator[] index out of bounds");
     return __begin_[__i];
   }

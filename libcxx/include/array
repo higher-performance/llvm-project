@@ -224,14 +224,16 @@ struct array {
     return const_iterator(data());
 #  endif
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator end() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator end() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
 #  if defined(_LIBCPP_ABI_BOUNDED_ITERATORS_IN_STD_ARRAY)
     return std::__make_static_bounded_iter<_Size>(data() + _Size, data());
 #  else
     return iterator(data() + _Size);
 #  endif
+ 
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator end() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator end() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
 #  if defined(_LIBCPP_ABI_BOUNDED_ITERATORS_IN_STD_ARRAY)
     return std::__make_static_bounded_iter<_Size>(data() + _Size, data());
 #  else
@@ -239,32 +241,42 @@ struct array {
 #  endif
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rbegin() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rbegin() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return reverse_iterator(end());
   }
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator
-  rbegin() const _NOEXCEPT {
+ 
+  rbegin() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return const_reverse_iterator(end());
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rend() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rend() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return reverse_iterator(begin());
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator rend() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator
+  rend() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return const_reverse_iterator(begin());
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cbegin() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cbegin() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return begin();
+ 
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cend() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cend() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return end();
+ 
   }
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator
-  crbegin() const _NOEXCEPT {
+ 
+  crbegin() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return rbegin();
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator crend() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator
+  crend() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return rend();
+ 
   }
 
   // capacity:
@@ -273,38 +285,46 @@ struct array {
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR bool empty() const _NOEXCEPT { return _Size == 0; }
 
   // element access:
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference operator[](size_type __n) _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference
+  operator[](size_type __n) _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(__n < _Size, "out-of-bounds access in std::array<T, N>");
     return __elems_[__n];
   }
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference
-  operator[](size_type __n) const _NOEXCEPT {
+ 
+  operator[](size_type __n) const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(__n < _Size, "out-of-bounds access in std::array<T, N>");
     return __elems_[__n];
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference at(size_type __n) {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference at(size_type __n) _LIBCPP_LIFETIMEBOUND {
     if (__n >= _Size)
       std::__throw_out_of_range("array::at");
     return __elems_[__n];
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference at(size_type __n) const {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference at(size_type __n) const _LIBCPP_LIFETIMEBOUND {
     if (__n >= _Size)
       std::__throw_out_of_range("array::at");
     return __elems_[__n];
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference front() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference front() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return (*this)[0];
+ 
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference front() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference front() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return (*this)[0];
+ 
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference back() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference back() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return (*this)[_Size - 1];
+ 
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference back() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference back() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return (*this)[_Size - 1];
   }
 
@@ -362,28 +382,32 @@ struct array<_Tp, 0> {
   }
 
   // iterators:
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator begin() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator begin() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
 #  if defined(_LIBCPP_ABI_BOUNDED_ITERATORS_IN_STD_ARRAY)
     return std::__make_static_bounded_iter<0>(data(), data());
 #  else
     return iterator(data());
 #  endif
+ 
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator begin() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator begin() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
 #  if defined(_LIBCPP_ABI_BOUNDED_ITERATORS_IN_STD_ARRAY)
     return std::__make_static_bounded_iter<0>(data(), data());
 #  else
     return const_iterator(data());
 #  endif
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator end() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 iterator end() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
 #  if defined(_LIBCPP_ABI_BOUNDED_ITERATORS_IN_STD_ARRAY)
     return std::__make_static_bounded_iter<0>(data(), data());
 #  else
     return iterator(data());
 #  endif
+ 
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator end() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator end() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
 #  if defined(_LIBCPP_ABI_BOUNDED_ITERATORS_IN_STD_ARRAY)
     return std::__make_static_bounded_iter<0>(data(), data());
 #  else
@@ -391,32 +415,42 @@ struct array<_Tp, 0> {
 #  endif
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rbegin() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rbegin() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return reverse_iterator(end());
   }
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator
-  rbegin() const _NOEXCEPT {
+ 
+  rbegin() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return const_reverse_iterator(end());
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rend() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reverse_iterator rend() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return reverse_iterator(begin());
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator rend() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator
+  rend() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return const_reverse_iterator(begin());
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cbegin() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cbegin() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return begin();
+ 
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cend() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_iterator cend() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return end();
+ 
   }
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator
-  crbegin() const _NOEXCEPT {
+ 
+  crbegin() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     return rbegin();
   }
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator crend() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 const_reverse_iterator
+  crend() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
+   
     return rend();
+ 
   }
 
   // capacity:
@@ -425,43 +459,44 @@ struct array<_Tp, 0> {
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR bool empty() const _NOEXCEPT { return true; }
 
   // element access:
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference operator[](size_type) _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference operator[](size_type) _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::operator[] on a zero-sized array");
     __libcpp_unreachable();
   }
 
   [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference
-  operator[](size_type) const _NOEXCEPT {
+ 
+  operator[](size_type) const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::operator[] on a zero-sized array");
     __libcpp_unreachable();
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference at(size_type) {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference at(size_type) _LIBCPP_LIFETIMEBOUND {
     std::__throw_out_of_range("array<T, 0>::at");
     __libcpp_unreachable();
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference at(size_type) const {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference at(size_type) const _LIBCPP_LIFETIMEBOUND {
     std::__throw_out_of_range("array<T, 0>::at");
     __libcpp_unreachable();
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference front() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference front() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::front() on a zero-sized array");
     __libcpp_unreachable();
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference front() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference front() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::front() on a zero-sized array");
     __libcpp_unreachable();
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference back() _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX17 reference back() _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::back() on a zero-sized array");
     __libcpp_unreachable();
   }
 
-  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference back() const _NOEXCEPT {
+  [[__nodiscard__]] _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX14 const_reference back() const _NOEXCEPT _LIBCPP_LIFETIMEBOUND {
     _LIBCPP_ASSERT_VALID_ELEMENT_ACCESS(false, "cannot call array<T, 0>::back() on a zero-sized array");
     __libcpp_unreachable();
   }

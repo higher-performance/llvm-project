@@ -1078,6 +1078,7 @@ public:
 #    if _LIBCPP_STD_VER >= 26
       noexcept(is_lvalue_reference_v<_Tp> && is_nothrow_constructible_v<_Tp, _Args...>)
 #    endif
+      _LIBCPP_LIFETIMEBOUND
   {
     reset();
     this->__construct(std::forward<_Args>(__args)...);
@@ -1087,7 +1088,8 @@ public:
   template <class _Up,
             class... _Args,
             enable_if_t<__is_constructible_for_optional_initializer_list_v<_Tp, _Up, _Args...>, int> = 0>
-  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 _Tp& emplace(initializer_list<_Up> __il, _Args&&... __args) {
+  _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX20 _Tp&
+  emplace(initializer_list<_Up> __il, _Args&&... __args) _LIBCPP_LIFETIMEBOUND {
     reset();
     this->__construct(__il, std::forward<_Args>(__args)...);
     return this->__get();
